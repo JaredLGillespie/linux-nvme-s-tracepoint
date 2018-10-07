@@ -31,6 +31,8 @@
 #include <linux/io-64-nonatomic-lo-hi.h>
 #include <linux/sed-opal.h>
 
+#include <trace/events/block.h>
+
 #include "nvme.h"
 
 #define SQ_SIZE(depth)		(depth * sizeof(struct nvme_command))
@@ -873,6 +875,8 @@ static blk_status_t nvme_queue_rq(struct blk_mq_hw_ctx *hctx,
 	struct nvme_queue *nvmeq = hctx->driver_data;
 	struct nvme_dev *dev = nvmeq->dev;
 	struct request *req = bd->rq;
+	struct request_queue *q = req->q;
+	struct bio *bio = req->bio;
 	struct nvme_command cmnd;
 	blk_status_t ret;
 
@@ -899,6 +903,7 @@ static blk_status_t nvme_queue_rq(struct blk_mq_hw_ctx *hctx,
 
 	blk_mq_start_request(req);
 	nvme_submit_cmd(nvmeq, &cmnd);
+	trace_block_sleeprq(q, bio, 0);
 	return BLK_STS_OK;
 out_cleanup_iod:
 	nvme_free_iod(dev, req);
