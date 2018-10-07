@@ -48,6 +48,7 @@
 struct dentry *blk_debugfs_root;
 #endif
 
+EXPORT_TRACEPOINT_SYMBOL_GPL(block_sleeprq);
 EXPORT_TRACEPOINT_SYMBOL_GPL(block_bio_remap);
 EXPORT_TRACEPOINT_SYMBOL_GPL(block_rq_remap);
 EXPORT_TRACEPOINT_SYMBOL_GPL(block_bio_complete);
